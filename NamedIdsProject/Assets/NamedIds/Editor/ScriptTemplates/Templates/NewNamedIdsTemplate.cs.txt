@@ -1,0 +1,13 @@
+using Erem.NamedIds;
+using UnityEngine;
+
+namespace Project
+{
+    public class #SCRIPTNAME#Attribute : NamedIdsAttribute
+    {
+        public #SCRIPTNAME#Attribute() : base(typeof(#SCRIPTNAME#)) { }
+    }
+
+    [CreateAssetMenu(menuName = "NamedIds/" + nameof(#SCRIPTNAME#), fileName = nameof(#SCRIPTNAME#))]
+    public class #SCRIPTNAME# : AbstractNamedIdsConfig { }
+}
