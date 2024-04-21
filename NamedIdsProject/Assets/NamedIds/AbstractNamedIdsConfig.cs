@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Erem.NamedIds
@@ -12,6 +13,16 @@ namespace Erem.NamedIds
         private Entry[] _entries = null!;
 
         public IReadOnlyList<Entry> Entries => _entries;
+
+        public List<string> GetNames()
+        {
+            return Entries.Select(x => x.Name).ToList();
+        }
+
+        public List<int> GetIds()
+        {
+            return Entries.Select(x => x.Id).ToList();
+        }
 
         public virtual string GetEntryAsString(Entry entry)
         {
