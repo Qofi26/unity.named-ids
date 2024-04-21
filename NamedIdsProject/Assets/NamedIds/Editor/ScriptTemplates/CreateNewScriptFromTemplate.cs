@@ -33,7 +33,7 @@ namespace Erem.NamedIds.Editor.ScriptTemplates
 
         private static string FindTemplate(string name)
         {
-            var path = UnityEngine.Application.dataPath;
+            var path = Path.Combine(UnityEngine.Application.dataPath, "../");
             var files = Directory.GetFiles(path,
                 name,
                 SearchOption.AllDirectories);
