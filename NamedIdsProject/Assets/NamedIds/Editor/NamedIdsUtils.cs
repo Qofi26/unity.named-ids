@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace Erem.NamedIds.Editor
 {
-    internal static class NamedIdsUtils
+    public static class NamedIdsUtils
     {
         public static AbstractNamedIdsConfig.Entry[]? LoadEntries(Type forType)
         {
