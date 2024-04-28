@@ -14,14 +14,24 @@ namespace Erem.NamedIds
 
         public IReadOnlyList<Entry> Entries => _entries;
 
-        public List<string> GetNames()
+        public void Initialize(IEnumerable<Entry> entries)
         {
-            return Entries.Select(x => x.Name).ToList();
+            _entries = entries.ToArray();
         }
 
-        public List<int> GetIds()
+        public Entry CreateEntry(int id, string entryName)
         {
-            return Entries.Select(x => x.Id).ToList();
+            return new Entry { Id = id, Name = entryName };
+        }
+
+        public IEnumerable<string> GetNames()
+        {
+            return Entries.Select(x => x.Name);
+        }
+
+        public IEnumerable<int> GetIds()
+        {
+            return Entries.Select(x => x.Id);
         }
 
         public virtual string GetEntryAsString(Entry entry)
