@@ -44,6 +44,14 @@ namespace Erem.NamedIds
         {
             public string Name = null!;
             public int Id = -1;
+
+            public Entry() { }
+
+            public Entry(string name, int id)
+            {
+                Name = name;
+                Id = id;
+            }
         }
     }
 }
