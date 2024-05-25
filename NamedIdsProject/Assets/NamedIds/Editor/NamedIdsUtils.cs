@@ -52,7 +52,11 @@ namespace Erem.NamedIds.Editor
 #endif
         }
 
-        public static void UpdateNamedIds<T>(IEnumerable<string> ids, bool setupIds = true, string defaultId = null!)
+        public static void UpdateNamedIds<T>(
+            IEnumerable<string> ids,
+            bool setupIds = true,
+            string defaultId = null!,
+            bool trim = true)
             where T : AbstractNamedIdsConfig
         {
 #if UNITY_EDITOR
@@ -69,7 +73,10 @@ namespace Erem.NamedIds.Editor
 #endif
         }
 
-        public static void UpdateNamedIds<T>(IEnumerable<AbstractNamedIdsConfig.Entry> entries, bool setupIds = true)
+        public static void UpdateNamedIds<T>(
+            IEnumerable<AbstractNamedIdsConfig.Entry> entries,
+            bool setupIds = true,
+            bool trim = true)
             where T : AbstractNamedIdsConfig
         {
 #if UNITY_EDITOR
@@ -81,6 +88,14 @@ namespace Erem.NamedIds.Editor
             }
 
             var list = entries.ToList();
+
+            if (trim)
+            {
+                foreach (var entry in list)
+                {
+                    entry.Name = entry.Name.Trim();
+                }
+            }
 
             if (setupIds)
             {
