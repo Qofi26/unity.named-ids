@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a33f5f1fff00f4c8b20c36c49a93c4, type: 3}
   m_Name: ExampleNamedIds
   m_EditorClassIdentifier: 
+  _entryFormat: '{0} : {1}'
   _entries:
   - Name: tavern
     Id: 0

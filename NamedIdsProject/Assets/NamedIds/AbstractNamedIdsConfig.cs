@@ -9,6 +9,10 @@ namespace Erem.NamedIds
 {
     public abstract class AbstractNamedIdsConfig : ScriptableObject
     {
+        [Tooltip("{0} - ID, {1} - Name")]
+        [SerializeField]
+        private string _entryFormat = "{0} : {1}";
+
         [SerializeField]
         private Entry[] _entries = null!;
 
@@ -36,7 +40,7 @@ namespace Erem.NamedIds
 
         public virtual string GetEntryAsString(Entry entry)
         {
-            return $"{entry.Id} : {entry.Name}";
+            return string.Format(_entryFormat, entry.Id, entry.Name);
         }
 
         [Serializable]
