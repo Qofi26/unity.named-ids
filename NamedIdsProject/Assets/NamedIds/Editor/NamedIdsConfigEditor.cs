@@ -12,11 +12,15 @@ namespace Erem.NamedIds.Editor
     [CustomEditor(typeof(AbstractNamedIdsConfig), true)]
     public class NamedIdsConfigEditor : UnityEditor.Editor
     {
+        private IReadOnlyList<AbstractNamedIdsConfig.Entry> Entries => ((AbstractNamedIdsConfig) target).Entries;
+
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
             GUILayout.BeginVertical();
+
+            GUILayout.Space(10);
 
             if (GUILayout.Button("Validate"))
             {
@@ -26,6 +30,11 @@ namespace Erem.NamedIds.Editor
             if (GUILayout.Button("Fix duplicates"))
             {
                 Validate(true);
+            }
+
+            if (GUILayout.Button("Trim"))
+            {
+                Trim();
             }
 
             if (GUILayout.Button("Save"))
@@ -38,26 +47,12 @@ namespace Erem.NamedIds.Editor
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void FixDuplicates()
-        {
-            var entries = ((AbstractNamedIdsConfig) target).Entries;
-            var maxId = entries.Max(x => x.Id);
-
-            foreach (var entry in entries)
-            {
-                if (entry.Id == -1)
-                {
-                    entry.Id = ++maxId;
-                }
-            }
-        }
-
         private void Validate(bool fixDuplicates)
         {
             Undo.RecordObject(target, $"Validate {target.name}");
             var uniqueIds = new List<int>();
             var uniqueNames = new List<string>();
-            var entries = ((AbstractNamedIdsConfig) target).Entries;
+            var entries = Entries;
             var maxId = entries.Max(x => x.Id);
             var success = true;
 
@@ -111,6 +106,14 @@ namespace Erem.NamedIds.Editor
             if (fixStringBuilder.Length != 0)
             {
                 Debug.LogError(fixStringBuilder.ToString());
+            }
+        }
+
+        private void Trim()
+        {
+            foreach (var entry in Entries)
+            {
+                entry.Name = entry.Name.Trim();
             }
         }
 

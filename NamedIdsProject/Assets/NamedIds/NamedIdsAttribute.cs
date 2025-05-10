@@ -7,6 +7,8 @@ namespace Erem.NamedIds
 {
     public class NamedIdsAttribute : PropertyAttribute
     {
+        public Type ContainedType { get; private set; }
+
         public NamedIdsAttribute(Type type)
         {
             if (!type.IsSubclassOf(typeof(AbstractNamedIdsConfig)))
@@ -32,7 +34,5 @@ namespace Erem.NamedIds
 
             ContainedType = type;
         }
-
-        public Type ContainedType { get; private set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Erem.NamedIds
         private string _entryFormat = "{0} : {1}";
 
         [SerializeField]
-        private Entry[] _entries = null!;
+        private Entry[] _entries = Array.Empty<Entry>();
 
         public IReadOnlyList<Entry> Entries => _entries;
 
@@ -46,7 +46,7 @@ namespace Erem.NamedIds
         [Serializable]
         public class Entry
         {
-            public string Name = null!;
+            public string Name = string.Empty;
             public int Id = -1;
 
             public Entry() { }

@@ -27,19 +27,38 @@ namespace Erem.NamedIds.Editor
                 return;
             }
 
-            var selectedIndex = GetSelectedIndex(property, _entries);
-            var newSelectedIndex = EditorGUI.Popup(position, label.text, selectedIndex, _names);
+            position = EditorGUI.PrefixLabel(position, label);
 
-            if (selectedIndex != newSelectedIndex)
+            var names = _names ?? Array.Empty<string>();
+
+            var selectedIndex = GetSelectedIndex(property, _entries);
+            var buttonText = selectedIndex >= 0 && names.Length > selectedIndex
+                ? names[selectedIndex]
+                : "Select...";
+
+            if (GUI.Button(position, buttonText))
             {
-                var entry = _entries[newSelectedIndex];
-                SetPropertyValue(property, entry);
+                SearchablePopup.Show(position, names, Select, selectedIndex);
             }
 
             EditorGUI.EndProperty();
+
+            return;
+
+            void Select(int newIndex)
+            {
+                if (selectedIndex == newIndex)
+                {
+                    return;
+                }
+
+                var entry = _entries[newIndex];
+                SetPropertyValue(property, entry);
+                property.serializedObject.ApplyModifiedProperties();
+            }
         }
 
-        private int GetSelectedIndex(SerializedProperty property, AbstractNamedIdsConfig.Entry[] entries)
+        private static int GetSelectedIndex(SerializedProperty property, AbstractNamedIdsConfig.Entry[] entries)
         {
             int selectedIndex;
             switch (property.propertyType)
@@ -61,7 +80,7 @@ namespace Erem.NamedIds.Editor
             return selectedIndex;
         }
 
-        private void SetPropertyValue(SerializedProperty property, AbstractNamedIdsConfig.Entry entry)
+        private static void SetPropertyValue(SerializedProperty property, AbstractNamedIdsConfig.Entry entry)
         {
             switch (property.propertyType)
             {

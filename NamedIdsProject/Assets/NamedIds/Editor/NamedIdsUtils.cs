@@ -12,25 +12,16 @@ namespace Erem.NamedIds.Editor
 {
     public static class NamedIdsUtils
     {
-        public static AbstractNamedIdsConfig.Entry[]? LoadEntries(Type forType)
+        public static IEnumerable<AbstractNamedIdsConfig.Entry> LoadEntries(Type forType)
         {
 #if UNITY_EDITOR
-            var guids = AssetDatabase.FindAssets($"t:{forType.Name}");
-            var assets = guids
-                .Select(AssetDatabase.GUIDToAssetPath)
-                .Select(entry => AssetDatabase.LoadAssetAtPath(entry, forType))
-                .Where(c => c != null)
-                .ToArray();
+            var container = LoadContainer(forType);
 
-            var container = assets.FirstOrDefault() as AbstractNamedIdsConfig;
-            if (container == null)
-            {
-                return null;
-            }
-
-            return container.Entries.ToArray();
+            return container != null
+                ? container.Entries
+                : Enumerable.Empty<AbstractNamedIdsConfig.Entry>();
 #else
-            return null;
+            return Enumerable.Empty<AbstractNamedIdsConfig.Entry>();;
 #endif
         }
 
@@ -42,8 +33,7 @@ namespace Erem.NamedIds.Editor
             var assets = guids
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Select(entry => AssetDatabase.LoadAssetAtPath(entry, forType))
-                .Where(c => c != null)
-                .ToArray();
+                .Where(c => c != null);
 
             var container = assets.FirstOrDefault() as AbstractNamedIdsConfig;
             return container;
