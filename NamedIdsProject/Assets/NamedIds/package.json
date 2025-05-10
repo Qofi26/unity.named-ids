@@ -1,11 +1,8 @@
 {
     "name": "com.erem.named-ids",
-    "version": "0.1.1",
+    "version": "1.0.0",
     "displayName": "Named IDs",
     "description": "This is named id for int/string fields",
     "documentationUrl": "https://github.com/Qofi26/unity.named-ids",
-    "keywords": [
-        "id",
-        "name"
-    ]
+    "licensesUrl": "https://github.com/Qofi26/unity.named-ids/blob/main/LICENSE"
 }
