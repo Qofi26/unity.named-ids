@@ -3,8 +3,16 @@
 ## Install via UPM (using Git URL)
 
 ````
-https://github.com/Qofi26/unity.named-ids.git?path=/NamedIdsProject/Assets/NamedIds#v/0.1.0
+https://github.com/Qofi26/unity.named-ids.git?path=/NamedIdsProject/Assets/NamedIds
 ````
+
+For use specific version (e.g. `v/1.0.0`)
+
+````
+https://github.com/Qofi26/unity.named-ids.git?path=/NamedIdsProject/Assets/NamedIds#v/1.0.0
+````
+
+OR download the [release package](https://github.com/Qofi26/unity.named-ids/releases) and add it to your project 
 
 # What is
 
