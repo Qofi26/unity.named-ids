@@ -58,7 +58,10 @@ namespace Erem.NamedIds.Editor
             {
                 var isSelected = Array.IndexOf(_options, option) == _selectedIndex;
 
-                var style = new GUIStyle(GUI.skin.button);
+                var style = new GUIStyle(GUI.skin.button)
+                {
+                    alignment = TextAnchor.MiddleLeft,
+                };
                 if (isSelected)
                 {
                     style.fontStyle = FontStyle.Bold;
