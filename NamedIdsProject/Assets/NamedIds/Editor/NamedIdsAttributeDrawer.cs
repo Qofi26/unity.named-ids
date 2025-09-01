@@ -10,8 +10,11 @@ namespace Erem.NamedIds.Editor
     [CustomPropertyDrawer(typeof(NamedIdsAttribute), true)]
     internal class NamedIdsAttributeDrawer : PropertyDrawer
     {
+        private AbstractNamedIdsConfig? _config;
         private AbstractNamedIdsConfig.Entry[]? _entries;
         private string[]? _names;
+
+        private AbstractNamedIdsConfig.ViewState _viewState;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -27,18 +30,48 @@ namespace Erem.NamedIds.Editor
                 return;
             }
 
+            var names = _names ?? Array.Empty<string>();
+            var selectedIndex = GetSelectedIndex(property, _entries);
+
             position = EditorGUI.PrefixLabel(position, label);
 
-            var names = _names ?? Array.Empty<string>();
+            var buttonSize = EditorGUIUtility.singleLineHeight;
+            var modeButtonRect = new Rect(position.x, position.y, buttonSize, buttonSize);
+            var fieldRect = new Rect(position.x + buttonSize + 2,
+                position.y,
+                position.width - buttonSize - 2,
+                position.height);
 
-            var selectedIndex = GetSelectedIndex(property, _entries);
-            var buttonText = selectedIndex >= 0 && names.Length > selectedIndex
-                ? names[selectedIndex]
-                : "Select...";
-
-            if (GUI.Button(position, buttonText))
+            const string icon = "*";
+            if (GUI.Button(modeButtonRect, icon))
             {
-                SearchablePopup.Show(position, names, Select, selectedIndex);
+                _viewState = (AbstractNamedIdsConfig.ViewState) (((int) _viewState + 1) % 3);
+            }
+
+            switch (_viewState)
+            {
+                case AbstractNamedIdsConfig.ViewState.Default:
+                    EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
+                    break;
+                case AbstractNamedIdsConfig.ViewState.Button:
+                    var buttonText = selectedIndex >= 0 && names.Length > selectedIndex
+                        ? names[selectedIndex]
+                        : "Select...";
+                    if (GUI.Button(fieldRect, buttonText))
+                    {
+                        SearchablePopup.Show(fieldRect, names, Select, selectedIndex);
+                    }
+
+                    break;
+                case AbstractNamedIdsConfig.ViewState.Popup:
+                    var newIndex = EditorGUI.Popup(fieldRect, selectedIndex, names);
+                    if (newIndex != selectedIndex && newIndex >= 0 && newIndex < _entries.Length)
+                    {
+                        SetPropertyValue(property, _entries[newIndex]);
+                        property.serializedObject.ApplyModifiedProperties();
+                    }
+
+                    break;
             }
 
             EditorGUI.EndProperty();
@@ -67,7 +100,6 @@ namespace Erem.NamedIds.Editor
                     var currentId = property.intValue;
                     selectedIndex = Array.FindIndex(entries, entry => entry.Id == currentId);
                     break;
-
                 case SerializedPropertyType.String:
                     var currentName = property.stringValue;
                     selectedIndex = Array.FindIndex(entries, entry => entry.Name == currentName);
@@ -100,13 +132,14 @@ namespace Erem.NamedIds.Editor
                 return;
             }
 
-            var container = NamedIdsUtils.LoadContainer(forType);
-            if (container == null)
+            _config = NamedIdsUtils.LoadContainer(forType);
+            if (!_config)
             {
                 return;
             }
 
-            _entries = container.Entries.ToArray();
+            _viewState = _config!.GetIdViewState();
+            _entries = _config.Entries.ToArray();
             if (_entries == null)
             {
                 return;
@@ -114,7 +147,7 @@ namespace Erem.NamedIds.Editor
 
             _names = _entries
                 .OrderBy(entry => entry.Id)
-                .Select(entry => container.GetEntryAsString(entry))
+                .Select(entry => _config.GetEntryAsString(entry))
                 .ToArray();
         }
     }

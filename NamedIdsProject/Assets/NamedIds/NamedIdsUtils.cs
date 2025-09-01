@@ -8,7 +8,7 @@ using System.Linq;
 using UnityEditor;
 #endif
 
-namespace Erem.NamedIds.Editor
+namespace Erem.NamedIds
 {
     public static class NamedIdsUtils
     {
