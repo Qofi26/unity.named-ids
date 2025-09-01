@@ -41,7 +41,7 @@ namespace Erem.NamedIds.Editor
         private void OnGUI()
         {
             GUI.SetNextControlName(kSearchFieldName);
-            _searchText = EditorGUILayout.TextField("Search", _searchText);
+            _searchText = EditorGUILayout.TextField(_searchText);
 
             if (_focusSearch)
             {
