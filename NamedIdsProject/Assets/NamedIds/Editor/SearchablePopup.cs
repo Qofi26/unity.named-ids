@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +14,9 @@ namespace Erem.NamedIds.Editor
         private Action<int>? _onSelect;
         private Vector2 _scrollPosition;
         private int _selectedIndex;
+
+        private bool _focusSearch;
+        private const string kSearchFieldName = "SearchablePopupSearchField";
 
         public static void Show(Rect rect, string[] options, Action<int> onSelect, int selectedIndex = -1)
         {
@@ -32,12 +34,20 @@ namespace Erem.NamedIds.Editor
                 window._scrollPosition = new Vector2(0, selectedIndex * itemHeight);
             }
 
+            window._focusSearch = true;
             window.ShowAsDropDown(screenPosition, windowSize);
         }
 
         private void OnGUI()
         {
+            GUI.SetNextControlName(kSearchFieldName);
             _searchText = EditorGUILayout.TextField("Search", _searchText);
+
+            if (_focusSearch)
+            {
+                EditorGUI.FocusTextInControl(kSearchFieldName);
+                _focusSearch = false;
+            }
 
             var filteredOptions = string.IsNullOrEmpty(_searchText)
                 ? _options

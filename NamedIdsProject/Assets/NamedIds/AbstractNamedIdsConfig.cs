@@ -14,7 +14,7 @@ namespace Erem.NamedIds
 
         [Tooltip("{0} - ID, {1} - Name")]
         [SerializeField]
-        private string _entryFormat = "{0} : {1}";
+        private string _entryFormat = "{1}";
 
         [SerializeField]
         private Entry[] _entries = Array.Empty<Entry>();

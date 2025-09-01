@@ -14,6 +14,8 @@ namespace Erem.NamedIds.Editor
         private AbstractNamedIdsConfig.Entry[]? _entries;
         private string[]? _names;
 
+        private const string kDefaultButtonIcon = "*";
+
         private AbstractNamedIdsConfig.ViewState _viewState;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -33,20 +35,15 @@ namespace Erem.NamedIds.Editor
             var names = _names ?? Array.Empty<string>();
             var selectedIndex = GetSelectedIndex(property, _entries);
 
-            position = EditorGUI.PrefixLabel(position, label);
+            var labelRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, position.height);
+            EditorGUI.LabelField(labelRect, label);
 
             var buttonSize = EditorGUIUtility.singleLineHeight;
-            var modeButtonRect = new Rect(position.x, position.y, buttonSize, buttonSize);
-            var fieldRect = new Rect(position.x + buttonSize + 2,
-                position.y,
-                position.width - buttonSize - 2,
-                position.height);
+            const float spacing = 2f;
+            var fieldWidth = position.width - EditorGUIUtility.labelWidth - buttonSize - spacing;
 
-            const string icon = "*";
-            if (GUI.Button(modeButtonRect, icon))
-            {
-                _viewState = (AbstractNamedIdsConfig.ViewState) (((int) _viewState + 1) % 3);
-            }
+            var fieldRect = new Rect(position.x + EditorGUIUtility.labelWidth, position.y, fieldWidth, position.height);
+            var modeButtonRect = new Rect(fieldRect.xMax + spacing, position.y, buttonSize, buttonSize);
 
             switch (_viewState)
             {
@@ -74,6 +71,11 @@ namespace Erem.NamedIds.Editor
                     break;
             }
 
+            if (GUI.Button(modeButtonRect, GetButtonIcon()))
+            {
+                _viewState = (AbstractNamedIdsConfig.ViewState) (((int) _viewState + 1) % 3);
+            }
+
             EditorGUI.EndProperty();
 
             return;
@@ -89,6 +91,11 @@ namespace Erem.NamedIds.Editor
                 SetPropertyValue(property, entry);
                 property.serializedObject.ApplyModifiedProperties();
             }
+        }
+
+        private string GetButtonIcon()
+        {
+            return kDefaultButtonIcon;
         }
 
         private static int GetSelectedIndex(SerializedProperty property, AbstractNamedIdsConfig.Entry[] entries)
