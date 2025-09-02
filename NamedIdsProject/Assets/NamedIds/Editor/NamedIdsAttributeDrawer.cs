@@ -16,12 +16,10 @@ namespace Erem.NamedIds.Editor
 
         private ViewState _viewState = ViewState.Popup;
 
-        private static EditorIconCache? _searchIcon;
         private static EditorIconCache? _editIcon;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            _searchIcon ??= new EditorIconCache("d_Search Icon");
             _editIcon ??= new EditorIconCache("d_editicon.sml");
 
             EditorGUI.BeginProperty(position, label, property);
@@ -44,11 +42,10 @@ namespace Erem.NamedIds.Editor
 
             var buttonSize = EditorGUIUtility.singleLineHeight;
             const float spacing = 2f;
-            var fieldWidth = position.width - EditorGUIUtility.labelWidth - buttonSize * 2 - spacing * 2;
+            var fieldWidth = position.width - EditorGUIUtility.labelWidth - buttonSize - spacing;
 
             var fieldRect = new Rect(position.x + EditorGUIUtility.labelWidth, position.y, fieldWidth, position.height);
-            var popupButtonRect = new Rect(fieldRect.xMax + spacing, position.y, buttonSize, buttonSize);
-            var modeButtonRect = new Rect(popupButtonRect.xMax + spacing, position.y, buttonSize, buttonSize);
+            var modeButtonRect = new Rect(fieldRect.xMax + spacing, position.y, buttonSize, buttonSize);
 
             switch (_viewState)
             {
@@ -56,19 +53,20 @@ namespace Erem.NamedIds.Editor
                     EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
                     break;
                 case ViewState.Popup:
-                    var newIndex = EditorGUI.Popup(fieldRect, selectedIndex, names);
-                    if (newIndex != selectedIndex && newIndex >= 0 && newIndex < _entries.Length)
+                    var buttonText = selectedIndex >= 0 && selectedIndex < names.Length
+                        ? names[selectedIndex]
+                        : "<None>";
+                    var style = new GUIStyle(GUI.skin.button)
                     {
-                        SetPropertyValue(property, _entries[newIndex]);
-                        property.serializedObject.ApplyModifiedProperties();
+                        alignment = TextAnchor.MiddleLeft
+                    };
+                    if (GUI.Button(fieldRect, buttonText, style))
+                    {
+                        var dropdown = new NamedIdsDropdown(fieldRect, names, Select, _config!.GroupSeparator);
+                        dropdown.ShowAdvanced(fieldRect);
                     }
 
                     break;
-            }
-
-            if (GUI.Button(popupButtonRect, _searchIcon.Icon, _searchIcon.Style))
-            {
-                SearchablePopup.Show(fieldRect, names, Select, selectedIndex);
             }
 
             if (GUI.Button(modeButtonRect, _editIcon.Icon, _editIcon.Style))

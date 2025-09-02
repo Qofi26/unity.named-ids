@@ -14,7 +14,12 @@ namespace Erem.NamedIds
         private string _entryFormat = "{1}";
 
         [SerializeField]
+        private string _groupSeparator = "/";
+
+        [SerializeField]
         private Entry[] _entries = Array.Empty<Entry>();
+
+        public string GroupSeparator => _groupSeparator;
 
         public IReadOnlyList<Entry> Entries => _entries;
 
