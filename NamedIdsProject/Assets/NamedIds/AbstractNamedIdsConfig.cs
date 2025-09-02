@@ -9,9 +9,6 @@ namespace Erem.NamedIds
 {
     public abstract class AbstractNamedIdsConfig : ScriptableObject
     {
-        [SerializeField]
-        private ViewState _viewState = ViewState.Popup;
-
         [Tooltip("{0} - ID, {1} - Name")]
         [SerializeField]
         private string _entryFormat = "{1}";
@@ -46,11 +43,6 @@ namespace Erem.NamedIds
             return string.Format(_entryFormat, entry.Id, entry.Name);
         }
 
-        public ViewState GetIdViewState()
-        {
-            return _viewState;
-        }
-
         [Serializable]
         public class Entry
         {
@@ -64,13 +56,6 @@ namespace Erem.NamedIds
                 Name = name;
                 Id = id;
             }
-        }
-
-        public enum ViewState
-        {
-            Default,
-            Popup,
-            Button,
         }
     }
 }

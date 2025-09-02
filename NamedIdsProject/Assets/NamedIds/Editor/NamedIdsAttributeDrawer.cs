@@ -14,9 +14,10 @@ namespace Erem.NamedIds.Editor
         private AbstractNamedIdsConfig.Entry[]? _entries;
         private string[]? _names;
 
-        private const string kDefaultButtonIcon = "*";
+        private ViewState _viewState = ViewState.Popup;
 
-        private AbstractNamedIdsConfig.ViewState _viewState;
+        private static readonly EditorIconCache _searchIcon = new("d_Search Icon");
+        private static readonly EditorIconCache _editIcon = new("d_editicon.sml");
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -40,27 +41,18 @@ namespace Erem.NamedIds.Editor
 
             var buttonSize = EditorGUIUtility.singleLineHeight;
             const float spacing = 2f;
-            var fieldWidth = position.width - EditorGUIUtility.labelWidth - buttonSize - spacing;
+            var fieldWidth = position.width - EditorGUIUtility.labelWidth - buttonSize * 2 - spacing * 2;
 
             var fieldRect = new Rect(position.x + EditorGUIUtility.labelWidth, position.y, fieldWidth, position.height);
-            var modeButtonRect = new Rect(fieldRect.xMax + spacing, position.y, buttonSize, buttonSize);
+            var popupButtonRect = new Rect(fieldRect.xMax + spacing, position.y, buttonSize, buttonSize);
+            var modeButtonRect = new Rect(popupButtonRect.xMax + spacing, position.y, buttonSize, buttonSize);
 
             switch (_viewState)
             {
-                case AbstractNamedIdsConfig.ViewState.Default:
+                case ViewState.Default:
                     EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
                     break;
-                case AbstractNamedIdsConfig.ViewState.Button:
-                    var buttonText = selectedIndex >= 0 && names.Length > selectedIndex
-                        ? names[selectedIndex]
-                        : "Select...";
-                    if (GUI.Button(fieldRect, buttonText))
-                    {
-                        SearchablePopup.Show(fieldRect, names, Select, selectedIndex);
-                    }
-
-                    break;
-                case AbstractNamedIdsConfig.ViewState.Popup:
+                case ViewState.Popup:
                     var newIndex = EditorGUI.Popup(fieldRect, selectedIndex, names);
                     if (newIndex != selectedIndex && newIndex >= 0 && newIndex < _entries.Length)
                     {
@@ -71,9 +63,16 @@ namespace Erem.NamedIds.Editor
                     break;
             }
 
-            if (GUI.Button(modeButtonRect, GetButtonIcon()))
+            if (GUI.Button(popupButtonRect, _searchIcon.Icon, _searchIcon.Style))
             {
-                _viewState = (AbstractNamedIdsConfig.ViewState) (((int) _viewState + 1) % 3);
+                SearchablePopup.Show(fieldRect, names, Select, selectedIndex);
+            }
+
+            if (GUI.Button(modeButtonRect, _editIcon.Icon, _editIcon.Style))
+            {
+                _viewState = _viewState == ViewState.Default
+                    ? ViewState.Popup
+                    : ViewState.Default;
             }
 
             EditorGUI.EndProperty();
@@ -91,11 +90,6 @@ namespace Erem.NamedIds.Editor
                 SetPropertyValue(property, entry);
                 property.serializedObject.ApplyModifiedProperties();
             }
-        }
-
-        private string GetButtonIcon()
-        {
-            return kDefaultButtonIcon;
         }
 
         private static int GetSelectedIndex(SerializedProperty property, AbstractNamedIdsConfig.Entry[] entries)
@@ -145,7 +139,6 @@ namespace Erem.NamedIds.Editor
                 return;
             }
 
-            _viewState = _config!.GetIdViewState();
             _entries = _config.Entries.ToArray();
             if (_entries == null)
             {
@@ -156,6 +149,12 @@ namespace Erem.NamedIds.Editor
                 .OrderBy(entry => entry.Id)
                 .Select(entry => _config.GetEntryAsString(entry))
                 .ToArray();
+        }
+
+        private enum ViewState
+        {
+            Default,
+            Popup,
         }
     }
 }
