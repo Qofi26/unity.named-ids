@@ -16,11 +16,14 @@ namespace Erem.NamedIds.Editor
 
         private ViewState _viewState = ViewState.Popup;
 
-        private static readonly EditorIconCache _searchIcon = new("d_Search Icon");
-        private static readonly EditorIconCache _editIcon = new("d_editicon.sml");
+        private static EditorIconCache? _searchIcon;
+        private static EditorIconCache? _editIcon;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            _searchIcon ??= new EditorIconCache("d_Search Icon");
+            _editIcon ??= new EditorIconCache("d_editicon.sml");
+
             EditorGUI.BeginProperty(position, label, property);
 
             var namedIdsAttribute = (NamedIdsAttribute) attribute;
