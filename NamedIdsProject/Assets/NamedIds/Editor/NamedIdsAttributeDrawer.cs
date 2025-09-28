@@ -53,13 +53,37 @@ namespace Erem.NamedIds.Editor
                     EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
                     break;
                 case ViewState.Popup:
-                    var buttonText = selectedIndex >= 0 && selectedIndex < names.Length
-                        ? names[selectedIndex]
-                        : "<None>";
+                    var isValid = selectedIndex >= 0 && selectedIndex < names.Length;
+
+                    string buttonText;
+
+                    if (isValid)
+                    {
+                        buttonText = names[selectedIndex];
+                    }
+                    else
+                    {
+                        buttonText = property.propertyType switch
+                        {
+                            SerializedPropertyType.String => property.stringValue,
+                            SerializedPropertyType.Integer => property.intValue.ToString(),
+                            _ => "None"
+                        };
+                    }
+
                     var style = new GUIStyle(GUI.skin.button)
                     {
-                        alignment = TextAnchor.MiddleLeft
+                        alignment = TextAnchor.MiddleLeft,
                     };
+
+                    if (!isValid)
+                    {
+                        style.normal.textColor = Color.red;
+                        style.hover.textColor = Color.red;
+                        style.active.textColor = Color.red;
+                        style.focused.textColor = Color.red;
+                    }
+
                     if (GUI.Button(fieldRect, buttonText, style))
                     {
                         var dropdown = new NamedIdsDropdown(fieldRect, names, Select, _config!.GroupSeparator);
