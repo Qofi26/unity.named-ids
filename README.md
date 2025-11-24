@@ -9,10 +9,10 @@ https://github.com/Qofi26/unity.named-ids.git?path=/NamedIdsProject/Assets/Named
 For use specific version (e.g. `v/2.0.0`)
 
 ````
-https://github.com/Qofi26/unity.named-ids.git?path=/NamedIdsProject/Assets/NamedIds#v/2.0.0
+https://github.com/Qofi26/unity.named-ids.git?path=/NamedIds#v/2.1.0
 ````
 
-OR download the [release package](https://github.com/Qofi26/unity.named-ids/releases) and add it to your project 
+OR download the [release package](https://github.com/Qofi26/unity.named-ids/releases) and add it to your project
 
 # What is
 
@@ -33,7 +33,7 @@ This means you can enter new values without editing the code, or even import the
 
 ## Step 1: Create new `Attribute` and `ScriptableObject`
 
-Create attribute class and inherit from `NamedIdsAttribute`. 
+Create attribute class and inherit from `NamedIdsAttribute`.
 
 Create ScriptableObject class and inherit from `AbstractNamedIdsConfig`.
 
