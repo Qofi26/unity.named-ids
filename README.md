@@ -3,7 +3,7 @@
 ## Install via UPM (using Git URL)
 
 ````
-https://github.com/Qofi26/unity.named-ids.git?path=/NamedIdsProject/Assets/NamedIds
+https://github.com/Qofi26/unity.named-ids.git?path=/NamedIds
 ````
 
 For use specific version (e.g. `v/2.0.0`)
