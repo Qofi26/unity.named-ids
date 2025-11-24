@@ -1,4 +1,4 @@
-using Erem.NamedIds;
+using NamedIds;
 using UnityEngine;
 
 namespace Project
