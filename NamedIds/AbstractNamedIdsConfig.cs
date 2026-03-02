@@ -9,57 +9,57 @@ namespace NamedIds
 {
     public abstract class AbstractNamedIdsConfig : ScriptableObject
     {
-        [Tooltip("{0} - ID, {1} - Name")]
+        [Tooltip("{0} - ID, {1} - Name, {2} - Description")]
         [SerializeField]
         private string _entryFormat = "{1}";
 
-        [SerializeField]
-        private string _groupSeparator = "/";
+        [SerializeField] private string _groupSeparator = "/";
 
-        [SerializeField]
-        private Entry[] _entries = Array.Empty<Entry>();
+        [SerializeField] private Value[] _values = Array.Empty<Value>();
 
         public string GroupSeparator => _groupSeparator;
 
-        public IReadOnlyList<Entry> Entries => _entries;
+        public IReadOnlyList<Value> Values => _values;
 
-        public void Initialize(IEnumerable<Entry> entries)
+        public virtual void Initialize(IEnumerable<Value> entries)
         {
-            _entries = entries.ToArray();
+            _values = entries.ToArray();
         }
 
-        public Entry CreateEntry(int id, string entryName)
+        public virtual Value CreateEntry(int id, string entryName, string description)
         {
-            return new Entry { Id = id, Name = entryName };
+            return new Value { Id = id, Name = entryName, Description = description };
         }
 
-        public IEnumerable<string> GetNames()
+        public virtual IEnumerable<string> GetNames()
         {
-            return Entries.Select(x => x.Name);
+            return Values.Select(x => x.Name);
         }
 
-        public IEnumerable<int> GetIds()
+        public virtual IEnumerable<int> GetIds()
         {
-            return Entries.Select(x => x.Id);
+            return Values.Select(x => x.Id);
         }
 
-        public virtual string GetEntryAsString(Entry entry)
+        public virtual string GetEntryAsString(Value value)
         {
-            return string.Format(_entryFormat, entry.Id, entry.Name);
+            return string.Format(_entryFormat, value.Id, value.Name, value.Description);
         }
 
         [Serializable]
-        public class Entry
+        public class Value
         {
             public string Name = string.Empty;
             public int Id = -1;
+            public string Description = string.Empty;
 
-            public Entry() { }
+            public Value() { }
 
-            public Entry(string name, int id)
+            public Value(string name, int id, string description)
             {
                 Name = name;
                 Id = id;
+                Description = description;
             }
         }
     }

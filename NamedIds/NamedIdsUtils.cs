@@ -9,14 +9,14 @@ namespace NamedIds
 {
     public static class NamedIdsUtils
     {
-        public static IEnumerable<AbstractNamedIdsConfig.Entry> LoadEntries(Type forType)
+        public static IEnumerable<AbstractNamedIdsConfig.Value> LoadEntries(Type forType)
         {
 #if UNITY_EDITOR
             var container = LoadContainer(forType);
 
             return container != null
-                ? container.Entries
-                : Enumerable.Empty<AbstractNamedIdsConfig.Entry>();
+                ? container.Values
+                : Enumerable.Empty<AbstractNamedIdsConfig.Value>();
 #else
             return Enumerable.Empty<AbstractNamedIdsConfig.Entry>();;
 #endif
@@ -47,13 +47,13 @@ namespace NamedIds
             where T : AbstractNamedIdsConfig
         {
 #if UNITY_EDITOR
-            var entries = new List<AbstractNamedIdsConfig.Entry>();
+            var entries = new List<AbstractNamedIdsConfig.Value>();
 
-            entries.AddRange(ids.Select(id => new AbstractNamedIdsConfig.Entry { Name = id }));
+            entries.AddRange(ids.Select(id => new AbstractNamedIdsConfig.Value { Name = id }));
 
             if (!string.IsNullOrEmpty(defaultId) && entries.All(x => x.Name != defaultId))
             {
-                entries.Insert(0, new AbstractNamedIdsConfig.Entry { Name = defaultId });
+                entries.Insert(0, new AbstractNamedIdsConfig.Value { Name = defaultId });
             }
 
             UpdateNamedIds<T>(entries, setupIds);
@@ -61,7 +61,7 @@ namespace NamedIds
         }
 
         public static void UpdateNamedIds<T>(
-            IEnumerable<AbstractNamedIdsConfig.Entry> entries,
+            IEnumerable<AbstractNamedIdsConfig.Value> entries,
             bool setupIds = true,
             bool trim = true)
             where T : AbstractNamedIdsConfig

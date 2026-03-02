@@ -12,7 +12,7 @@ namespace NamedIds.Editor
     [CustomEditor(typeof(AbstractNamedIdsConfig), true)]
     public class NamedIdsConfigEditor : UnityEditor.Editor
     {
-        private IReadOnlyList<AbstractNamedIdsConfig.Entry> Entries => ((AbstractNamedIdsConfig) target).Entries;
+        private IReadOnlyList<AbstractNamedIdsConfig.Value> Entries => ((AbstractNamedIdsConfig) target).Values;
 
         public override void OnInspectorGUI()
         {

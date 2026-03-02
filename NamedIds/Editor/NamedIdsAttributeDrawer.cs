@@ -11,7 +11,7 @@ namespace NamedIds.Editor
     internal class NamedIdsAttributeDrawer : PropertyDrawer
     {
         private AbstractNamedIdsConfig? _config;
-        private AbstractNamedIdsConfig.Entry[]? _entries;
+        private AbstractNamedIdsConfig.Value[]? _entries;
         private string[]? _names;
 
         private ViewState _viewState = ViewState.Popup;
@@ -36,6 +36,9 @@ namespace NamedIds.Editor
 
             var names = _names ?? Array.Empty<string>();
             var selectedIndex = GetSelectedIndex(property, _entries);
+            var tooltip = selectedIndex >= 0
+                ? _entries[selectedIndex].Description
+                : string.Empty;
 
             var labelRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, position.height);
             EditorGUI.LabelField(labelRect, label);
@@ -47,10 +50,12 @@ namespace NamedIds.Editor
             var fieldRect = new Rect(position.x + labelRect.width, position.y, fieldWidth, position.height);
             var modeButtonRect = new Rect(fieldRect.xMax + spacing, position.y, buttonSize, buttonSize);
 
+            var guiContent = new GUIContent("", tooltip);
+
             switch (_viewState)
             {
                 case ViewState.Default:
-                    EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
+                    EditorGUI.PropertyField(fieldRect, property, guiContent, true);
                     break;
                 case ViewState.Popup:
                     var isValid = selectedIndex >= 0 && selectedIndex < names.Length;
@@ -84,7 +89,8 @@ namespace NamedIds.Editor
                         style.focused.textColor = Color.red;
                     }
 
-                    if (GUI.Button(fieldRect, buttonText, style))
+                    guiContent.text = buttonText;
+                    if (GUI.Button(fieldRect, guiContent, style))
                     {
                         var dropdown = new NamedIdsDropdown(fieldRect, names, Select, _config!.GroupSeparator);
                         dropdown.ShowAdvanced(fieldRect);
@@ -117,7 +123,7 @@ namespace NamedIds.Editor
             }
         }
 
-        private static int GetSelectedIndex(SerializedProperty property, AbstractNamedIdsConfig.Entry[] entries)
+        private static int GetSelectedIndex(SerializedProperty property, AbstractNamedIdsConfig.Value[] entries)
         {
             int selectedIndex;
             switch (property.propertyType)
@@ -138,15 +144,15 @@ namespace NamedIds.Editor
             return selectedIndex;
         }
 
-        private static void SetPropertyValue(SerializedProperty property, AbstractNamedIdsConfig.Entry entry)
+        private static void SetPropertyValue(SerializedProperty property, AbstractNamedIdsConfig.Value value)
         {
             switch (property.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    property.intValue = entry.Id;
+                    property.intValue = value.Id;
                     break;
                 case SerializedPropertyType.String:
-                    property.stringValue = entry.Name;
+                    property.stringValue = value.Name;
                     break;
             }
         }
@@ -164,7 +170,7 @@ namespace NamedIds.Editor
                 return;
             }
 
-            _entries = _config.Entries.ToArray();
+            _entries = _config.Values.ToArray();
             if (_entries == null)
             {
                 return;

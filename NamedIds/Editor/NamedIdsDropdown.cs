@@ -47,7 +47,7 @@ namespace NamedIds.Editor
                     var part = path[j];
                     if (j == path.Length - 1)
                     {
-                        parent.AddChild(new AdvancedDropdownItem(part) { id = i });
+                        parent.AddChild(new AdvancedDropdownItem(part));
                     }
                     else
                     {
@@ -61,6 +61,12 @@ namespace NamedIds.Editor
                         parent = existing;
                     }
                 }
+            }
+
+            var index = 0;
+            foreach (var item in root.children)
+            {
+                item.id = index++;
             }
 
             return root;
