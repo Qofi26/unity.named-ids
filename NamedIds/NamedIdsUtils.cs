@@ -18,7 +18,7 @@ namespace NamedIds
                 ? container.Values
                 : Enumerable.Empty<AbstractNamedIdsConfig.Value>();
 #else
-            return Enumerable.Empty<AbstractNamedIdsConfig.Entry>();;
+            return Enumerable.Empty<AbstractNamedIdsConfig.Value>();
 #endif
         }
 
